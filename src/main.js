@@ -9,3 +9,7 @@ new Vue({
   render: h => h(App),
   router,
 }).$mount('#app')
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+import axios from 'axios'
+Vue.prototype.$axios = axios
