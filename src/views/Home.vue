@@ -1,6 +1,6 @@
 <template>
     <div id="Home">
-        <div id="sideBar" style="width: 20%;height: 100%;float: left">
+        <div id="sideBar" style="width: 15%;height: 100%;float: left">
                 <el-menu
                         :default-active="$router.path"
                         class="el-menu-vertical-demo"
@@ -21,14 +21,14 @@
                         <i class="el-icon-document"></i>
                         <span slot="title">处罚风险</span>
                     </el-menu-item>
-                    <el-menu-item index="4">
+                    <el-menu-item index="/caseDatabase">
                         <i class="el-icon-setting"></i>
-                        <span slot="title">导航四</span>
+                        <span slot="title">处罚库</span>
                     </el-menu-item>
                 </el-menu>
 
         </div>
-        <div id="chart" style="width: 70%;height: 100%;float: left">
+        <div id="chart" style="width: 80%;height: 100%;float: left">
             <router-view></router-view>
         </div>
 
