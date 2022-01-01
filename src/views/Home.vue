@@ -17,9 +17,9 @@
                         <i class="el-icon-menu"></i>
                         <span slot="title">处罚金额</span>
                     </el-menu-item>
-                    <el-menu-item index="3">
+                    <el-menu-item index="/risk">
                         <i class="el-icon-document"></i>
-                        <span slot="title">导航三</span>
+                        <span slot="title">处罚风险</span>
                     </el-menu-item>
                     <el-menu-item index="4">
                         <i class="el-icon-setting"></i>
