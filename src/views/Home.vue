@@ -7,8 +7,8 @@
                         router
                         @open="handleOpen"
                         @close="handleClose"
-                        background-color="#4e6379"
-                style="width: 100%; height: 1800px">
+                        background-color="#ccecff"
+                style="width: 100%; height: 1840px">
                     <el-menu-item index="/numbers">
                         <i class="el-icon-location"></i>
                         <span>处罚数量</span>

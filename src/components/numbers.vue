@@ -1,6 +1,12 @@
 <template>
     <el-container>
-        <el-header>处罚数量</el-header>
+        <el-header>
+            <!-- 使用div来布局 span内写文字 -->
+            <div>
+                <!-- <img src="../assets/img/logo.png" alt=""> -->
+                <span>处罚数量</span>
+            </div>
+        </el-header>
         <el-main>
             <div class="CM">
                 <div class="title">
@@ -24,14 +30,17 @@
                 <div class="title">
                     <span>处罚数量折线图</span>
                 </div>
-                <span>开始日期</span>
+                <span>地区</span>
+                <el-input v-model="district" placeholder="请输入地区" class="district-name" style="width: 100px"></el-input>
+                <span style="margin-left: 50px">开始日期</span>
                 <el-date-picker v-model="startMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
 
                 </el-date-picker>
-                <span style="margin-left: 100px">结束日期</span>
-                <el-date-picker v-model="endMonthDistrict" type="month" placeholder="选择月"  style="margin-left: 100px"  @change="jobSearch" value-format="MM">
+                <span style="margin-left: 50px">结束日期</span>
+                <el-date-picker v-model="endMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
 
                 </el-date-picker>
+                <el-button @click="change()" style="margin-left: 50px">确认</el-button>
                 <div id="district">
                     <div id="line" style="width: 1000px;height: 400px;"></div>
                 </div>
@@ -47,7 +56,7 @@
 
                 </el-date-picker>
                 <span style="margin-left: 100px">结束日期</span>
-                <el-date-picker v-model="endMonthTop" type="month" placeholder="选择月"  style="margin-left: 100px"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="endMonthTop" type="month" placeholder="选择月"   @change="jobSearch" value-format="MM">
 
                 </el-date-picker>
             </div>
@@ -55,6 +64,10 @@
                 <div id="top" style="width: 1000px;height: 400px;"></div>
             </div>
         </el-main>
+        <el-container>
+            <!-- 页脚 -->
+            <el-footer>银保监会行政处罚案例库</el-footer>
+        </el-container>
     </el-container>
 
 </template>
@@ -78,6 +91,7 @@
                 endMonthDistrict: '',
                 startMonthTop: '',
                 endMonthTop: '',
+                district: '',
                 top10data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                 top10Numbers: ['1010', '909', '880', '770', '660', '550', '440', '330', '220', '110'],
                 // 热力图
@@ -114,6 +128,11 @@
             this.creatThermodynamicChart()
         },
         methods: {
+            change(){
+              console.log(this.district)
+              console.log(this.startMonthDistrict - this.endMonthDistrict)
+              this.drawLine('line')
+            },
             jobSearch() {
                 this.getJobListByMonth();
             },
@@ -204,12 +223,20 @@
             },
             drawLine(id) {
                 this.charts = echarts.init(document.getElementById(id))
+                var months = []
+                var month = 0;
+                for(var i = 0; i < this.endMonthDistrict - this.startMonthDistrict + 1; i++){
+                    month = parseInt(this.startMonthDistrict) + i
+                    console.log(month)
+                    months[i] = month + "月";
+                }
+                console.log(months)
                 this.charts.setOption({
                     tooltip: {
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['全国地区处罚数量']
+                        data: [this.district + "地区处罚数量"]
                     },
                     grid: {
                         left: '5%',
@@ -225,43 +252,47 @@
                     },
                     xAxis: {
                         type: 'category',
+                        name: "月份",
                         boundaryGap: false,
                         "axisLabel":{
                             interval: 0,
                             rotate: 40
                         },
-                        data: ['北京','天津',
-                            '上海','重庆',
-                            '河北','河南',
-                            '云南','辽宁',
-                            '黑龙江','湖南',
-                            '安徽','山东',
-                            '新疆','江苏',
-                            '浙江','江西',
-                            '湖北','广西',
-                            '甘肃','山西',
-                            '内蒙古','陕西',
-                            '吉林','福建',
-                            '贵州','广东',
-                            '青海','西藏',
-                            '四川','宁夏',
-                            '海南','台湾',
-                            '香港','澳门',
-                            '南海诸岛']
+                        data: months
+                        // data: ['北京','天津',
+                        //     '上海','重庆',
+                        //     '河北','河南',
+                        //     '云南','辽宁',
+                        //     '黑龙江','湖南',
+                        //     '安徽','山东',
+                        //     '新疆','江苏',
+                        //     '浙江','江西',
+                        //     '湖北','广西',
+                        //     '甘肃','山西',
+                        //     '内蒙古','陕西',
+                        //     '吉林','福建',
+                        //     '贵州','广东',
+                        //     '青海','西藏',
+                        //     '四川','宁夏',
+                        //     '海南','台湾',
+                        //     '香港','澳门',
+                        //     '南海诸岛']
 
                     },
                     yAxis: {
+                        name: this.district + "地区处罚数量",
                         type: 'value'
                     },
 
                     series: [{
-                        name: '近七日收益',
+                        name: this.district + "地区处罚数量",
                         type: 'line',
                         stack: '总量',
                         data: this.opinionData,
                         smooth: true
                     }]
                 })
+                this.district = ""
             },
             drawbar(){
                 var myChart = echarts.init(document.getElementById('top'));
@@ -287,11 +318,11 @@
                         }
                     },
                     legend: {
-
+                        show: true,
+                        data: ["处罚数量"],
                         textStyle:{
                             color:'#fff',
                         },
-                        /* data: [titleName],*/
                     },
                     grid: {//设置图表位置
                         left: '3%',
@@ -301,6 +332,7 @@
                     },
                     xAxis: {
                         color:'#fff',
+                        name: "处罚数量",
                         splitLine : {//去掉网格线
                             show : false
                         },
@@ -333,6 +365,7 @@
 
                         type: 'category',//轴的类型分两种 1.category（类别）2.value(值)
                         data: /*da*/this.top10data,
+                        name: "处罚数量",
                         axisLabel : {
                             show : true,
                             textStyle : {
@@ -355,7 +388,7 @@
                     },
                     series: [
                         {
-                            name: '处罚数量',
+                            name: "处罚数量",
                             type: 'bar',
                             data: /*aa*/this.top10Numbers,/*请求回来的数据数组*/
 
@@ -408,5 +441,35 @@
     #top{
          box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
      }
+    .el-header {
+        background-color: antiquewhite;
+        display: flex;
+        justify-content: space-between;
+        /* 上面的display 和justify-content 实现 退出按钮显示在右边 */
+        padding-left: 0cm;
+        /* 上面的padding-left 减少图片左边的间距，el-header 默认有间距 */
+        align-items: center;
+        /* 按钮居中 */
+        color:black;
+        /* 文本的颜色 */
+        font-size: 20px;
+        width: 1210px
+    }
+    /* 文本大小 */
+    > div {
+        display: flex;
+        align-items: center;}
+    /* 文字居中 */
+    span {
+        margin-left: 15px;
+        /* 图片和文字之间的间距 */
+    }
+
+    .el-footer {
+        background-color: bisque;
+        width: 1210px;
+        display: flex;
+        align-content: center;
+    }
 </style>
 
