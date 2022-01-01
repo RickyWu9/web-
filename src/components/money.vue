@@ -4,7 +4,7 @@
             <!-- 使用div来布局 span内写文字 -->
             <div>
                 <!-- <img src="../assets/img/logo.png" alt=""> -->
-                <span>处罚金额</span>
+                <text-highlight :queries="queries">{{ description }}</text-highlight>
             </div>
         </el-header>
         <el-main>
@@ -85,6 +85,8 @@
         name: "Test",
         data() {
             return {
+                queries: ['金额'],
+                description: '处罚金额图例',
                 startMonthChina: '',
                 endMonthChina: '',
                 startMonthDistrict: '',
@@ -450,10 +452,11 @@
         /* 上面的padding-left 减少图片左边的间距，el-header 默认有间距 */
         align-items: center;
         /* 按钮居中 */
-        color:black;
+        color:#1E90FF;
         /* 文本的颜色 */
-        font-size: 20px;
-        width: 1210px
+        font-size: 30px;
+        width: 1210px;
+
     }
     /* 文本大小 */
     > div {
