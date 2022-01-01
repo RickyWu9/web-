@@ -8,11 +8,9 @@
                 </div>
                 <span>开始日期</span>
                 <el-date-picker v-model="startMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
-
                 </el-date-picker>
                 <span style="margin-left: 100px">结束日期</span>
                 <el-date-picker v-model="endMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
-
                 </el-date-picker>
             </div>
             <div class="ChinaMap">
