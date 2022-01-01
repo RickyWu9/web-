@@ -13,3 +13,6 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 import axios from 'axios'
 Vue.prototype.$axios = axios
+import TextHighlight from 'vue-text-highlight';
+
+Vue.component('text-highlight', TextHighlight);

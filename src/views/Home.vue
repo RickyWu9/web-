@@ -1,14 +1,14 @@
 <template>
     <div id="Home">
-        <div id="sideBar" style="width: 13%;height: 100%;float: left;left: 0">
+        <div id="sideBar" style="width: 20%;height: 100%;float: left">
                 <el-menu
                         :default-active="$router.path"
                         class="el-menu-vertical-demo"
                         router
                         @open="handleOpen"
                         @close="handleClose"
-                        background-color="#4e6379"
-                style="width: 100%; height: 1800px;left: 0">
+                        background-color="#ccecff"
+                style="width: 100%; height: 1840px">
                     <el-menu-item index="/numbers">
                         <i class="el-icon-location"></i>
                         <span>处罚数量</span>
@@ -17,9 +17,9 @@
                         <i class="el-icon-menu"></i>
                         <span slot="title">处罚金额</span>
                     </el-menu-item>
-                    <el-menu-item index="/risk">
+                    <el-menu-item index="3">
                         <i class="el-icon-document"></i>
-                        <span slot="title">风险指数</span>
+                        <span slot="title">导航三</span>
                     </el-menu-item>
                     <el-menu-item index="4">
                         <i class="el-icon-setting"></i>
@@ -28,7 +28,7 @@
                 </el-menu>
 
         </div>
-        <div id="chart" style="margin-left:3%;width: 80%;height: 100%;float: left">
+        <div id="chart" style="width: 70%;height: 100%;float: left">
             <router-view></router-view>
         </div>
 
