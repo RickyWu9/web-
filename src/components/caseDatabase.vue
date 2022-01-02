@@ -75,10 +75,30 @@
                     <template slot-scope="scope">
                     <el-button type="success" icon="el-icon-zoom-in" size="mini" @click="detailCheckClick(scope.row)">查看</el-button>
                     <el-button type="success" icon="el-icon-zoom-in" size="mini" v-if="!isBatchProcess" @click="docModifyClick(scope.row)">修改</el-button>
-                    <el-button type="danger" icon="el-icon-delete" size="mini" v-if="!isBatchProcess">删除</el-button>
+                    <el-popover
+                            placement="top"
+                            :visible.sync="isDeleteConfirmVisible"
+                            :ref="`popover-${scope.$index}`">
+                        <p>确定删除该条例吗？</p>
+                        <div style="text-align: right; margin: 0">
+                            <el-button size="mini" type="text" @click="cancelDocDelete(scope)">取消</el-button>
+                            <el-button type="primary" size="mini" @click="confirmDocDelete(scope,scope.row)">确定</el-button>
+                        </div>
+                        <el-button type="danger" slot="reference" icon="el-icon-delete" size="mini" v-if="!isBatchProcess" style="margin-left: 10px">删除</el-button>
+                    </el-popover>
+
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="tabListPage" style="width: 1300px">
+                <el-pagination
+                        @current-change="handlePageChange"
+                        :current-page="currentPage"
+                        :page-size="pageSize" layout=" total,prev, pager, next, jumper"
+                        :total="docSearchCount"
+                        style="text-align: center">
+                </el-pagination>
+            </div>
         </div>
 <!--        文书详细信息查看-->
         <el-dialog
@@ -216,9 +236,23 @@
                 isDetailSearchVisible:false,
                 isDetailCheckVisible:false,
                 isDocModifyVisible:false,
+                isDeleteConfirmVisible:false,
                 isSearched:false,
                 isBatchProcess:false,
                 docList:[{
+                    penaltyDate:"1237-12-4",
+                    penaltyName:123,
+                    decisionNumber:123,
+                    punishedPartyName:321,
+                    penaltyDecision:432,
+                    penaltyBasis:1414,
+                    penaltyType:15151,
+                    mainInChargeName:115,
+                    penaltyCause:"afaf",
+                    agencyName:412421,
+                    penaltyCategory:124115,
+                },
+                    {
                     penaltyDate:"1237-12-4",
                     penaltyName:123,
                     decisionNumber:123,
@@ -236,12 +270,30 @@
                 docModifyForm:{},
                 createForm:{},
                 docSelected:{},
+                pageSize:10,
+                currentPage:1,
+                //TODO 获取页数
+                docSearchCount:2,
+
             }
         },
         methods:{
             nameSearchClick(){
-                //TODO
-                //searchName
+                if(this.searchName==""){
+                    this.$message({
+                        type:"warning",
+                        message:"搜索内容为空！",
+                    })
+                    return;
+                }
+                var success=true;
+                if(success){
+                    this.isDetailSearchVisible=false;
+                    this.$message({
+                        type:"success",
+                        message:"文书搜索成功！",
+                    })
+                }
             },
             handleSelectionChange(){
 
@@ -255,7 +307,7 @@
                 this.docSelected=info;
                 this.docModifyForm=JSON.parse(JSON.stringify(info));
             },
-            //TODO
+            //TODO 文书修改
             confirmDocModifyClick(){
                 if(this.isObjectValueEqual(this.docModifyForm,this.docSelected)){
                     this.$message({
@@ -268,12 +320,28 @@
                     this.docSelected.decisionNumber=this.docModifyForm.decisionNumber
                     this.docSelected.punishedPartyName=this.docModifyForm.punishedPartyName
                     this.docSelected.penaltyBasis=this.docModifyForm.penaltyBasis
-                    this.isDocModifyVisible=false;
+                    var success=true;
+                    if(success){
+                        this.isDocModifyVisible=false;
+                        this.$message({
+                            type:"success",
+                            message:"文书内容修改成功！",
+                        })
+                    }
                 }
             },
-            //TODO
+            //TODO 详细搜索
+
             confirmDetailSearchClick(){
-                this.isDetailSearchVisible=false;
+                var success=true;
+                if(success){
+                    this.isDetailSearchVisible=false;
+                    this.$message({
+                        type:"success",
+                        message:"文书搜索成功！",
+                    })
+                }
+
             },
             isObjectValueEqual(a, b) {
                 var aProps = Object.getOwnPropertyNames(a);
@@ -294,7 +362,30 @@
                 }
                 return true;
             },
+            handlePageChange(val) {
+                // 改变默认的页数
+                if(this.currentPage!==val){
+                    //TODO 改变页数
 
+                }
+                this.currentPage=val
+            },
+            cancelDocDelete(scope){
+                this.$refs[`popover-${scope.$index}`].doClose();
+            },
+            //TODO 文书删除
+            confirmDocDelete(scope,info){
+                this.$refs[`popover-${scope.$index}`].doClose();
+                console.log(info);
+                var success=true;
+                if(success){
+                    this.$message({
+                        type:"success",
+                        message:"文书删除成功！",
+                    })
+                }
+
+            }
         }
     }
 </script>

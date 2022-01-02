@@ -33,6 +33,11 @@ const routes = [
         path: '/caseDatabase',
         name: 'caseDatabase',
         component: () => import('../components/caseDatabase')
+    },
+    {
+        path: '/caseUnpublished',
+        name: 'caseUnpublished',
+        component: () => import('../components/caseUnpublished')
     }
 ]
 

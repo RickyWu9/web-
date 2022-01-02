@@ -14,16 +14,20 @@
                         <span>处罚数量</span>
                     </el-menu-item>
                     <el-menu-item index="/money">
-                        <i class="el-icon-menu"></i>
+                        <i class="el-icon-s-goods"></i>
                         <span slot="title">处罚金额</span>
                     </el-menu-item>
                     <el-menu-item index="/risk">
-                        <i class="el-icon-document"></i>
+                        <i class="el-icon-s-marketing"></i>
                         <span slot="title">处罚风险</span>
                     </el-menu-item>
                     <el-menu-item index="/caseDatabase">
-                        <i class="el-icon-setting"></i>
-                        <span slot="title">处罚库</span>
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">处罚库(已发布)</span>
+                    </el-menu-item>
+                    <el-menu-item index="/caseUnpublished">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">处罚库(未发布)</span>
                     </el-menu-item>
                 </el-menu>
 
