@@ -18,6 +18,7 @@
                 <span style="margin-left: 100px">结束日期</span>
                 <el-date-picker v-model="endMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
                 </el-date-picker>
+                <el-button type="primary" icon="el-icon-thumb" @click="changeMap()" style="margin-left: 230px">确认</el-button>
             </div>
             <div class="ChinaMap">
                 <div id="container" style="width:1000px;height:500px"></div>
@@ -38,7 +39,7 @@
                 <el-date-picker v-model="endMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
-                <el-button @click="change()" style="margin-left: 50px">确认</el-button>
+                <el-button type="primary" icon="el-icon-thumb" @click="change()" style="margin-left: 100px">确认</el-button>
                 <div id="district">
                     <div id="line" style="width: 1000px;height: 400px;"></div>
                 </div>
@@ -55,8 +56,8 @@
                 </el-date-picker>
                 <span style="margin-left: 100px">结束日期</span>
                 <el-date-picker v-model="endMonthTop" type="month" placeholder="选择月"   @change="jobSearch" value-format="yyyy-MM">
-
                 </el-date-picker>
+                <el-button type="primary" icon="el-icon-thumb" @click="changeTop()" style="margin-left: 230px">确认</el-button>
             </div>
             <div id="top10">
                 <div id="top" style="width: 1000px;height: 400px;"></div>
@@ -128,6 +129,14 @@
             this.creatThermodynamicChart()
         },
         methods: {
+            changeTop(){
+                console.log(this.startMonthTop + "Top")
+                this.drawbar()
+            },
+            changeMap(){
+                console.log(this.startMonthChina + "China")
+                this.creatThermodynamicChart()
+            },
             change(){
               console.log(this.district)
               console.log(this.startMonthDistrict - this.endMonthDistrict)
@@ -244,8 +253,8 @@
                 var startTime = new Date(this.startMonthDistrict)
                 var endTime = new Date(this.endMonthDistrict)
                 // console.log(startTime.getMonth()+1 + "      1111")
-                var monthGap = this.monDiff(this.startMonthDistrict, this.endMonthDistrict)
-                console.log(monthGap + " 111111")
+                // var monthGap = this.monDiff(this.startMonthDistrict, this.endMonthDistrict)
+                // console.log(monthGap + " 111111")
                 var time = ''
                 var idx = 0
                 for(var i = startTime.getFullYear(); i <= endTime.getFullYear(); i++){
@@ -271,7 +280,7 @@
 
                 }
                 console.log(months)
-
+                console.log(startTime + "startTime")
 
 
                 this.charts.setOption({
