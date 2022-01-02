@@ -13,11 +13,11 @@
                     <span>处罚金额热力图</span>
                 </div>
                 <span>开始日期</span>
-                <el-date-picker v-model="startMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="startMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
                 <span style="margin-left: 100px">结束日期</span>
-                <el-date-picker v-model="endMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="endMonthChina" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
             </div>
@@ -33,11 +33,11 @@
                 <span>地区</span>
                 <el-input v-model="district" placeholder="请输入地区" class="district-name" style="width: 100px"></el-input>
                 <span style="margin-left: 50px">开始日期</span>
-                <el-date-picker v-model="startMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="startMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
                 <span style="margin-left: 50px">结束日期</span>
-                <el-date-picker v-model="endMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="endMonthDistrict" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
                 <el-button @click="change()" style="margin-left: 50px">确认</el-button>
@@ -52,11 +52,11 @@
                     <span>处罚金额top10</span>
                 </div>
                 <span>开始日期</span>
-                <el-date-picker v-model="startMonthTop" type="month" placeholder="选择月"  @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="startMonthTop" type="month" placeholder="选择月"  @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
                 <span style="margin-left: 100px">结束日期</span>
-                <el-date-picker v-model="endMonthTop" type="month" placeholder="选择月"   @change="jobSearch" value-format="MM">
+                <el-date-picker v-model="endMonthTop" type="month" placeholder="选择月"   @change="jobSearch" value-format="yyyy-MM">
 
                 </el-date-picker>
             </div>
@@ -190,7 +190,7 @@
                         text: ['高', '低'],//取值范围的文字
                         inRange: {
                             // color: ['#e0ffff', '#006edd']//取值范围的颜色
-                            color: ['#e2ebf4', '#de1f05']//取值范围的颜色
+                            color: ['#00FFFF', '#A52A2A']//取值范围的颜色
                         },
                         show: true//图注
                     },
@@ -223,16 +223,57 @@
                 //使用制定的配置项和数据显示图表
                 myChart.setOption(option);
             },
+            monDiff(startTime, endTime) {
+                startTime = new Date(startTime);
+                endTime = new Date(endTime);
+                if((endTime.getYear() == startTime.getYear()) && (endTime.getMonth() == startTime.getMonth())&& endTime>startTime) {
+                    return 1;
+                } else if(endTime>startTime && (endTime.getYear() == startTime.getYear())) {
+                    return(endTime.getYear() - startTime.getYear()) * 12 + endTime.getMonth() - startTime.getMonth()+1;
+                }else if(endTime>startTime && (endTime.getYear() > startTime.getYear())){
+                    return(endTime.getYear() - startTime.getYear()) * 12 + endTime.getMonth() - startTime.getMonth()+1;
+                }else{
+                    return "开始日期大于结束日期";
+                }
+            },
             drawLine(id) {
                 this.charts = echarts.init(document.getElementById(id))
+
+
+                //计算月份跨度
                 var months = []
-                var month = 0;
-                for(var i = 0; i < this.endMonthDistrict - this.startMonthDistrict + 1; i++){
-                    month = parseInt(this.startMonthDistrict) + i
-                    console.log(month)
-                    months[i] = month + "月";
+                var startTime = new Date(this.startMonthDistrict)
+                var endTime = new Date(this.endMonthDistrict)
+                // console.log(startTime.getMonth()+1 + "      1111")
+                var monthGap = this.monDiff(this.startMonthDistrict, this.endMonthDistrict)
+                console.log(monthGap + " 111111")
+                var time = ''
+                var idx = 0
+                for(var i = startTime.getFullYear(); i <= endTime.getFullYear(); i++){
+
+                    var j = 1;
+                    var endMonth = 12;
+                    if(i > startTime.getFullYear()){
+                        j = 1
+                    }else{
+                        j = startTime.getMonth() + 1
+                    }
+
+                    if(i == endTime.getFullYear()){
+                        endMonth = endTime.getMonth()+1
+                    }else{
+                        endMonth = 12
+                    }
+                    for(;j <= endMonth;j++){
+                        time = i + "年" + j + "月"
+                        months[idx] = time;
+                        idx++;
+                    }
+
                 }
                 console.log(months)
+
+
                 this.charts.setOption({
                     tooltip: {
                         trigger: 'axis'
@@ -404,7 +445,7 @@
                             barWidth : 15,//柱子宽度
                             itemStyle : {
                                 normal : {
-                                    color:'#ccecff',//柱状的颜色
+                                    color:'#FFE4C4',//柱状的颜色
                                     label : {
                                         textStyle : {
                                             fontSize : '15',//柱状上的显示的文字
