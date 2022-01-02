@@ -1,38 +1,38 @@
 <template>
     <div id="caseDatabase">
         <el-row type="flex"  >
-            <el-col :span="12" style="margin-left: 50px;font-weight: bold">
+            <el-col :span="8" style="margin-left: 50px;font-weight: bold">
                 案例名称搜索：
                 <el-input
                         placeholder="请输入案例名称"
                         prefix-icon="el-icon-search"
                         v-model="searchName"
-                        style="width: 400px">
+                        style="width: 350px">
                 </el-input>
             </el-col>
-            <el-col :span="2" style="margin-left: 10px">
+            <el-col :span="2" >
                 <el-button type="primary" icon="el-icon-search" @click="nameSearchClick">搜索</el-button>
             </el-col>
-            <el-col :span="3" style="padding-left: 10px">
+            <el-col :span="2" style="margin-left: 10px">
                 <el-button type="primary"  icon="el-icon-search" @click="isDetailSearchVisible=true">详细搜索</el-button>
             </el-col>
-            <el-col :span="3" style="padding-left: 5px" v-if="!isBatchProcess">
+            <el-col :span="2" style="margin-left: 10px" v-if="!isBatchProcess">
                 <el-button type="primary"  icon="el-icon-document-add" @click="isDocCreateVisible=true">新建文书</el-button>
             </el-col>
-            <el-col :span="3" style="padding-left: 5px" >
+            <el-col :span="2" style="margin-left: 10px" >
                 <el-button type="warning" icon="el-icon-folder" v-if="!isBatchProcess" @click="isBatchProcess=true">批量管理</el-button>
                 <el-button type="warning" icon="el-icon-loading" v-else @click="isBatchProcess=true">正在批量管理</el-button>
             </el-col>
         </el-row>
         <el-row type="flex" style="margin-top: 20px" justify="center">
             <el-col :span="3"  v-if="isBatchProcess">
-                <el-button type="danger" icon="el-icon-folder-remove"  @click="isBatchProcess=false">删除选中文书</el-button>
+                <el-button type="danger" icon="el-icon-folder-remove"  @click="deleteDocsSelected()">删除选中文书</el-button>
             </el-col>
             <el-col :span="3"  v-if="isBatchProcess">
-                <el-button type="danger" icon="el-icon-folder-add"  @click="pubishDocsSelected()">发布选中文书</el-button>
+                <el-button type="danger" icon="el-icon-folder-add"  @click="publishDocsSelected()">发布选中文书</el-button>
             </el-col>
             <el-col :span="3"  v-if="isBatchProcess" style="padding-left: 50px">
-                <el-button type="info" icon="el-icon-close"  @click="deleteDocsSelected()">取消批量管理</el-button>
+                <el-button type="info" icon="el-icon-close"  @click="isBatchProcess=false">取消批量管理</el-button>
             </el-col>
         </el-row>
 <!--        文书列表-->
@@ -79,7 +79,10 @@
                 <el-table-column
                         prop="penaltyState"
                         label="行政处罚状态"
-                        width="150">
+                        width="150" >
+                    <template slot-scope="scope">
+                        <div :style="{'color':scope.row.penaltyState=='已发布'?'#00ffff':'gray'}" style="font-weight: bold">{{scope.row.penaltyState}}</div>
+                    </template>
                 </el-table-column>
                 <el-table-column
                         label="操作"
@@ -357,7 +360,7 @@
                 docModifyForm:{},
                 createForm:{},
                 docSelected:{},
-                docsSelected:{},
+                docsSelected:[],
                 pageSize:10,
                 currentPage:1,
                 //TODO 获取页数
@@ -424,10 +427,11 @@
                         type:"success",
                         message:"文书搜索成功！",
                     })
+                    this.searchName='';
                 }
             },
             handleSelectionChange(val){
-                this.docSelected=val;
+                this.docsSelected=val;
             },
             detailCheckClick(info){
                 this.isDetailCheckVisible=true;
@@ -537,10 +541,39 @@
             },
             //TODO 文书批量发布
             publishDocsSelected(){
+                if(this.docsSelected.length==0){
+                    this.$message({
+                        type:'warning',
+                        message:'未选中任何文书条例！'
+                    });
+                    return;
+                }
+                var success=true;
+                if(success){
+                    this.$message({
+                        type:'success',
+                        message:'批量发布成功！'
+                    });
+                }
                 this.isBatchProcess=false;
             },
             //TODO 文书批量删除
-            DeleteDocsSelected(){
+            deleteDocsSelected(){
+                console.log(this.docsSelected);
+                if(this.docsSelected.length==0){
+                    this.$message({
+                        type:'warning',
+                        message:'未选中任何文书条例！'
+                    });
+                    return;
+                }
+                var success=true;
+                if(success){
+                    this.$message({
+                        type:'success',
+                        message:'批量删除成功！'
+                    });
+                }
                 this.isBatchProcess=false;
             }
         }

@@ -25,10 +25,6 @@
                         <i class="el-icon-menu"></i>
                         <span slot="title">处罚库(已发布)</span>
                     </el-menu-item>
-                    <el-menu-item index="/caseUnpublished">
-                        <i class="el-icon-menu"></i>
-                        <span slot="title">处罚库(未发布)</span>
-                    </el-menu-item>
                 </el-menu>
 
         </div>
