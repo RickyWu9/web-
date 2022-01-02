@@ -1,6 +1,12 @@
 <template>
     <div id="riskThermodynamicChart">
-        风险热力图
+        <el-row>风险热力图</el-row>
+        <span>开始日期</span>
+        <el-date-picker v-model="startMonth" type="month" placeholder="选择月"   value-format="MM">
+        </el-date-picker>
+        <span style="margin-left: 100px">结束日期</span>
+        <el-date-picker v-model="endMonth" type="month" placeholder="选择月"   value-format="MM">
+        </el-date-picker>
         <div id="riskThermodynamicGraph" style="width: 1000px;height: 500px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         </div>
     </div>
@@ -13,6 +19,8 @@
         name: "riskThermodynamicChart",
         data(){
             return {
+                startMonth:'01',
+                endMonth:'12',
                 thermodynamicList: [{name: '北京',value: 420 },{name: '天津',value: 400 },
                     {name: '上海',value: 500 },{name: '重庆',value: 350 },
                     {name: '河北',value: 100 },{name: '河南',value: 200 },

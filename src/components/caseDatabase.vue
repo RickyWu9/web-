@@ -16,6 +16,9 @@
             <el-col :span="3" style="padding-left: 10px">
                 <el-button type="primary"  icon="el-icon-search" @click="isDetailSearchVisible=true">详细搜索</el-button>
             </el-col>
+            <el-col :span="3" style="padding-left: 5px" v-if="!isBatchProcess">
+                <el-button type="primary"  icon="el-icon-document-add" @click="isDocCreateVisible=true">新建文书</el-button>
+            </el-col>
             <el-col :span="3" style="padding-left: 5px" >
                 <el-button type="warning" icon="el-icon-folder" v-if="!isBatchProcess" @click="isBatchProcess=true">批量管理</el-button>
                 <el-button type="warning" icon="el-icon-loading" v-else @click="isBatchProcess=true">正在批量管理</el-button>
@@ -25,11 +28,15 @@
             <el-col :span="3"  v-if="isBatchProcess">
                 <el-button type="danger" icon="el-icon-folder-remove"  @click="isBatchProcess=false">删除选中文书</el-button>
             </el-col>
+            <el-col :span="3"  v-if="isBatchProcess">
+                <el-button type="danger" icon="el-icon-folder-add"  @click="pubishDocsSelected()">发布选中文书</el-button>
+            </el-col>
             <el-col :span="3"  v-if="isBatchProcess" style="padding-left: 50px">
-                <el-button type="info" icon="el-icon-close"  @click="isBatchProcess=false">取消批量管理</el-button>
+                <el-button type="info" icon="el-icon-close"  @click="deleteDocsSelected()">取消批量管理</el-button>
             </el-col>
         </el-row>
-        <div style="width: 1300px;padding-left: 50px">
+<!--        文书列表-->
+        <div style="width: 1550px;padding-left: 50px">
             <el-table
                     ref="multipleTable"
                     :data="this.docList"
@@ -70,15 +77,31 @@
                         width="300">
                 </el-table-column>
                 <el-table-column
+                        prop="penaltyState"
+                        label="行政处罚状态"
+                        width="150">
+                </el-table-column>
+                <el-table-column
                         label="操作"
-                        width="300">
+                        width="400">
                     <template slot-scope="scope">
                     <el-button type="success" icon="el-icon-zoom-in" size="mini" @click="detailCheckClick(scope.row)">查看</el-button>
-                    <el-button type="success" icon="el-icon-zoom-in" size="mini" v-if="!isBatchProcess" @click="docModifyClick(scope.row)">修改</el-button>
+                    <el-button type="success" icon="el-icon-edit" size="mini" v-if="!isBatchProcess" @click="docModifyClick(scope.row)">修改</el-button>
+                    <el-popover
+                            placement="top"
+                            :visible.sync="isPublishConfirmVisible"
+                            :ref="`popoverPublish-${scope.$index}`">
+                        <p>确定发布该条例吗？</p>
+                        <div style="text-align: right; margin: 0">
+                            <el-button size="mini" type="text" @click="cancelDocDelete(scope)">取消</el-button>
+                            <el-button type="primary" size="mini" @click="confirmDocPublish(scope,scope.row)">确定</el-button>
+                        </div>
+                        <el-button type="danger" slot="reference" icon="el-icon-delete" size="mini" v-if="!isBatchProcess && scope.row.penaltyState!='已发布'" style="margin-left: 10px">发布</el-button>
+                    </el-popover>
                     <el-popover
                             placement="top"
                             :visible.sync="isDeleteConfirmVisible"
-                            :ref="`popover-${scope.$index}`">
+                            :ref="`popoverDelete-${scope.$index}`">
                         <p>确定删除该条例吗？</p>
                         <div style="text-align: right; margin: 0">
                             <el-button size="mini" type="text" @click="cancelDocDelete(scope)">取消</el-button>
@@ -225,10 +248,70 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+<!--        文书新建-->
+        <el-dialog
+                title="文书详细搜索"
+                :visible.sync="isDocCreateVisible">
+            <el-form ref="form" :model="createForm" label-width="150px" style="left: 0" :rules="rules">
+                <el-form-item label="日期" required prop="penaltyDate">
+                    <el-col :span="7">
+                        <el-date-picker type="date" placeholder="选择日期"
+                                        v-model="createForm.penaltyDate"
+                                        format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd"
+                                        style="width: 100%;">
+
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="行政处罚名称" prop="penaltyName">
+                    <el-input v-model="createForm.penaltyName" ></el-input>
+                </el-form-item>
+                <el-form-item label="处罚类型" prop="penaltyType">
+                    <el-select v-model="createForm.penaltyType" placeholder="请选择活动区域">
+                        <el-option label="个人" value="个人"></el-option>
+                        <el-option label="单位" value="单位"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="行政处罚种类" prop="penaltyCategory">
+                    <el-select v-model="createForm.penaltyCategory" placeholder="请选择活动区域">
+                        <el-option label="银保监会机关" value="银保监会机关"></el-option>
+                        <el-option label="银保监局本局" value="银保监局本局"></el-option>
+                        <el-option label="银保分局本局" value="银保分局本局"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="行政处罚文号" prop="decisionNumber">
+                    <el-input v-model="createForm.decisionNumber"></el-input>
+                </el-form-item>
+                <el-form-item label="主要违规事由" prop="penaltyCause">
+                    <el-input  v-model="createForm.penaltyCause"></el-input>
+                </el-form-item>
+                <el-form-item label="行政处罚决定" prop="penaltyDecision">
+                    <el-input v-model="createForm.penaltyDecision"></el-input>
+                </el-form-item>
+                <el-form-item label="处罚当事人" prop="punishedPartyName">
+                    <el-input v-model="createForm.punishedPartyName"></el-input>
+                </el-form-item>
+                <el-form-item label="主要负责人姓名" prop="mainInChargeName">
+                    <el-input v-model="createForm.mainInChargeName"></el-input>
+                </el-form-item>
+                <el-form-item label="行政处罚依据" prop="penaltyBasis">
+                    <el-input v-model="createForm.penaltyBasis"></el-input>
+                </el-form-item>
+                <el-form-item label="机关名称" prop="agencyName">
+                    <el-input v-model="createForm.agencyName"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="isDocCreateVisible=false" style="float: right;padding-left: 20px">取消</el-button>
+                    <el-button type="primary" @click="confirmDocCreateClick()" style="float: right;margin-right: 20px">创建</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+    // import{mapGetters,mapActions} from "vuex";
     export default {
         name: "caseDatabase",
         data(){
@@ -237,6 +320,8 @@
                 isDetailCheckVisible:false,
                 isDocModifyVisible:false,
                 isDeleteConfirmVisible:false,
+                isDocCreateVisible:false,
+                isPublishConfirmVisible:false,
                 isSearched:false,
                 isBatchProcess:false,
                 docList:[{
@@ -251,6 +336,7 @@
                     penaltyCause:"afaf",
                     agencyName:412421,
                     penaltyCategory:124115,
+                    penaltyState:"已发布",
                 },
                     {
                     penaltyDate:"1237-12-4",
@@ -264,18 +350,63 @@
                     penaltyCause:"afaf",
                     agencyName:412421,
                     penaltyCategory:124115,
+                    penaltyState:"未发布",
                 }],
                 searchName:"",
                 searchForm:{},
                 docModifyForm:{},
                 createForm:{},
                 docSelected:{},
+                docsSelected:{},
                 pageSize:10,
                 currentPage:1,
                 //TODO 获取页数
                 docSearchCount:2,
+                rules: {
+                    decisionNumber:[
+                        { required: true, message: '请输入处罚文号', trigger: 'blur' },
+                        { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+                    ],
+                    punishedPartyName:[
+                        { required: true, message: '请输入被罚当事人姓名', trigger: 'blur' },
+                        { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+                    ],
+                    mainInChargeName:[
+                        { required: true, message: '请输入主要负责人姓名', trigger: 'blur' },
+                        { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+                    ],
+                    penaltyCategory:[
+                        { required: true, message: '请选择行政处罚种类', trigger: 'change' }
+                    ],
+                    penaltyName: [
+                        { required: true, message: '请输入处罚名称', trigger: 'blur' },
+                        { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+                    ],
+                    penaltyCause: [
+                        { required: true, message: '请输入违规事由', trigger: 'blur' },
+                        { min: 0, max: 200, message: '长度在200个字符内', trigger: 'blur' }
+                    ],
+                    penaltyBasis: [
+                        { required: true, message: '请输入处罚依据', trigger: 'blur' },
+                        { min: 0, max: 200, message: '长度在200个字符内', trigger: 'blur' }
+                    ],
+                    agencyName: [
+                        { required: true, message: '请输入处罚机关名称', trigger: 'blur' },
+                        { min: 0, max: 200, message: '长度在200个字符内', trigger: 'blur' }
+                    ],
+                    penaltyDecision: [
+                        { required: true, message: '请输入处罚决定', trigger: 'blur' },
+                        { min: 0, max: 200, message: '长度在200个字符内', trigger: 'blur' }
+                    ],
+                    penaltyType: [
+                        { required: true, message: '请选择行政处罚类型', trigger: 'change' }
+                    ],
+                    penaltyDate: [
+                        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                    ],
 
-            }
+                },
+             }
         },
         methods:{
             nameSearchClick(){
@@ -295,8 +426,8 @@
                     })
                 }
             },
-            handleSelectionChange(){
-
+            handleSelectionChange(val){
+                this.docSelected=val;
             },
             detailCheckClick(info){
                 this.isDetailCheckVisible=true;
@@ -371,11 +502,12 @@
                 this.currentPage=val
             },
             cancelDocDelete(scope){
-                this.$refs[`popover-${scope.$index}`].doClose();
+                this.$refs[`popoverDelete-${scope.$index}`].doClose();
+                this.$refs[`popoverPublish-${scope.$index}`].doClose();
             },
             //TODO 文书删除
             confirmDocDelete(scope,info){
-                this.$refs[`popover-${scope.$index}`].doClose();
+                this.$refs[`popoverDelete-${scope.$index}`].doClose();
                 console.log(info);
                 var success=true;
                 if(success){
@@ -385,6 +517,31 @@
                     })
                 }
 
+            },
+            //TODO 文书发布
+            confirmDocPublish(scope,info){
+                this.$refs[`popoverPublish-${scope.$index}`].doClose();
+                console.log(info);
+                var success=true;
+                if(success){
+                    this.$message({
+                        type:"success",
+                        message:"文书发布成功！",
+                    })
+                }
+
+            },
+            //TODO 文书创建
+            confirmDocCreateClick(){
+
+            },
+            //TODO 文书批量发布
+            publishDocsSelected(){
+                this.isBatchProcess=false;
+            },
+            //TODO 文书批量删除
+            DeleteDocsSelected(){
+                this.isBatchProcess=false;
             }
         }
     }
