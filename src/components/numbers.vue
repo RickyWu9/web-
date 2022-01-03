@@ -454,7 +454,7 @@
                             barWidth : 15,//柱子宽度
                             itemStyle : {
                                 normal : {
-                                    color:'#ccecff',//柱状的颜色
+                                    color:'#FFE4C4',//柱状的颜色
                                     label : {
                                         textStyle : {
                                             fontSize : '15',//柱状上的显示的文字
