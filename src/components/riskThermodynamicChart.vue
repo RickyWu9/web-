@@ -2,11 +2,12 @@
     <div id="riskThermodynamicChart">
         <el-row>风险热力图</el-row>
         <span>开始日期</span>
-        <el-date-picker v-model="startMonth" type="month" placeholder="选择月"   value-format="MM">
+        <el-date-picker v-model="startMonth" type="month" placeholder="选择月"   value-format="yyyy-MM">
         </el-date-picker>
         <span style="margin-left: 100px">结束日期</span>
-        <el-date-picker v-model="endMonth" type="month" placeholder="选择月"   value-format="MM">
+        <el-date-picker v-model="endMonth" type="month" placeholder="选择月"   value-format="yyyy-MM">
         </el-date-picker>
+        <el-button type="primary" icon="el-icon-thumb" @click="change()" style="margin-left: 245px">确认</el-button>
         <div id="riskThermodynamicGraph" style="width: 1000px;height: 500px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         </div>
     </div>
@@ -65,7 +66,7 @@
                     text: ['高', '低'],//取值范围的文字
                     inRange: {
                         // color: ['#e0ffff', '#006edd']//取值范围的颜色
-                        color: ['#e2ebf4', '#de1f05']//取值范围的颜色
+                        color: ['#F8F8FF', '#1E90FF']//取值范围的颜色
                     },
                     show: true//图注
                 },
@@ -94,6 +95,11 @@
                 ]
             };
             this.chart.setOption(this.option);
+        },
+        methods: {
+            change(){
+                //选择日期范围
+            }
         }
     }
 </script>

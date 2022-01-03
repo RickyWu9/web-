@@ -4,11 +4,12 @@
         <span>地区</span>
         <el-input v-model="district" placeholder="请输入地区"  style="width: 150px"></el-input>
         <span>开始日期</span>
-        <el-date-picker v-model="startMonth" type="month" placeholder="选择月"   value-format="MM">
+        <el-date-picker v-model="startMonth" type="month" placeholder="选择月"   value-format="yyyy-MM">
         </el-date-picker>
         <span style="margin-left: 100px">结束日期</span>
-        <el-date-picker v-model="endMonth" type="month" placeholder="选择月"   value-format="MM">
+        <el-date-picker v-model="endMonth" type="month" placeholder="选择月"   value-format="yyyy-MM">
         </el-date-picker>
+        <el-button type="primary" icon="el-icon-thumb" @click="change()" style="margin-left: 60px">确认</el-button>
         <div id="riskRankGraph" style="width: 1000px;height: 500px;box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         </div>
     </div>
@@ -151,6 +152,11 @@
             };
             this.chart.setOption(this.option);
         },
+        methods: {
+            change(){
+                //选择日期范围
+            }
+        }
     }
 </script>
 
